@@ -19,13 +19,15 @@ if upload_file:
 
     with st.expander("查看合同关键信息"):
         st.json(contract_info)
-    contract_info = pares_json(contract_info, ['合同开始期限', '合同结束期限'])
-    check = ''
-    amount_check = amount_convert_chain.invoke(
-        {'chinese_amount': contract_info['合同中文大写金额']})
-    print(amount_check)
-    if amount_check['合同中文大写金额'] != contract_info['合同数字金额']:
-        check += f"合同金额不匹配 请检查\n 数字金额: {contract_info['合同数字金额']}\n 中文金额: {contract_info['合同中文大写金额']}\n\n"
-    check += validate_date_expire(contract_info['合同结束期限']) + '\n\n'
 
-    st.text(check)
+    with st.spinner('合同审核...'):
+        contract_info = pares_json(contract_info, ['合同开始期限', '合同结束期限'])
+        check = ''
+        amount_check = amount_convert_chain.invoke(
+            {'chinese_amount': contract_info['合同中文大写金额']})
+        print(amount_check)
+        if amount_check['合同中文大写金额'] != contract_info['合同数字金额']:
+            check += f"合同金额不匹配 请检查\n 数字金额: {contract_info['合同数字金额']}\n 中文金额: {contract_info['合同中文大写金额']}\n\n"
+        check += validate_date_expire(contract_info['合同结束期限']) + '\n\n'
+
+        st.text(check)
